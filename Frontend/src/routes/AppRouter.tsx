@@ -8,12 +8,12 @@ import { ToastContainerComponent } from '../components/toastMessage';
 // import SignIn from '../pages/auth/signIn';
 // import SignUp from '../pages/auth/signUp';
 // import Customers from '../pages/cms/customers';
-import Dashboard from '../pages/cms/dashboard';
+import Dashboard from '../pages/cms/Dashboard';
 // import Employees from '../pages/cms/employees';
 // import Orders from '../pages/cms/orders';
 // import Products from '../pages/cms/products';
-import Profile from '../pages/cms/profile';
-import Setting from '../pages/cms/setting';
+import Profile from '../pages/cms/Profile';
+import Setting from '../pages/cms/Setting';
 
 const AppRouter = () => {
   return (

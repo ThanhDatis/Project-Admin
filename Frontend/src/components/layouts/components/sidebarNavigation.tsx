@@ -37,9 +37,7 @@ interface SidebarNavigationProps {
   open: boolean;
 }
 
-export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
-  open,
-}) => {
+export const SidebarNavigation: React.FC<SidebarNavigationProps> = ({ open }) => {
   const navigate = useNavigate();
   const location = useLocation();
 

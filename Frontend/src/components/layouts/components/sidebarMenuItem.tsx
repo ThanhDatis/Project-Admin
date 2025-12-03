@@ -1,4 +1,4 @@
-import { ListItem, ListItemButton, ListItemIcon, ListItemText, keyframes } from '@mui/material';
+import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 
 import { gray } from '../../../common/colors';
 
@@ -16,21 +16,6 @@ interface SidebarMenuItemProps {
   onNavigate: (path: string) => void;
   open: boolean;
 }
-
-const pulse = keyframes`
-  0% {
-    transform: translateY(-50%) scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-50%) scale(1.2);
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(-50%) scale(1);
-    opacity: 1;
-  }
-`;
 
 export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
   item,
@@ -74,20 +59,6 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
             },
           },
 
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            left: 0,
-            top: '50%',
-            width: '3px',
-            height: '70%',
-            backgroundColor: isActive ? gray[600] : gray[400],
-            transform: isActive ? 'scaleY(1)' : 'scaleY(0)',
-            transformOrigin: 'center',
-            transition: 'transform 0.3s ease',
-            borderRadius: '0 2px 2px 0',
-          },
-
           '& .MuiListItemIcon-root': {
             color: isActive ? gray[800] : gray[500],
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -99,21 +70,6 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
             fontWeight: isActive ? 600 : 400,
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           },
-
-          ...(isActive && {
-            '&::after': {
-              content: '""',
-              position: 'absolute',
-              right: open ? 8 : '-50%',
-              top: '50%',
-              width: '6px',
-              height: '6px',
-              backgroundColor: gray[800],
-              borderRadius: '50%',
-              transform: open ? 'translateY(-50%)' : 'translate(50%, -50%)',
-              animation: `${pulse} 2s infinite`,
-            },
-          }),
         },
         open ? { justifyContent: 'initial' } : { justifyContent: 'center' },
       ]}

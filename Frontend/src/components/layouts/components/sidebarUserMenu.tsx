@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { ROUTES } from '../../../common/constant';
 // import { borderLine } from '../../../common/color';
-import { useAuthStore } from '../../../store';
-import ToastMessage from '../../toastMessage';
+// import { useAuthStore } from '../../../store';
+// import ToastMessage from '../../toastMessage';
 
 import ConditionalTooltip from './conditionalTooltip';
 
@@ -16,8 +16,13 @@ interface SidebarUserMenuProps {
 
 export const SidebarUserMenu: React.FC<SidebarUserMenuProps> = ({ open }) => {
   const navigate = useNavigate();
-  const { user, logout } = useAuthStore();
+  // const { user, logout } = useAuthStore();
   const [anchorEL, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const user = {
+    name: 'Admin Demo',
+    email: 'admin@demo.com',
+  };
 
   const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -32,12 +37,12 @@ export const SidebarUserMenu: React.FC<SidebarUserMenuProps> = ({ open }) => {
     navigate(ROUTES.PROFILE || './profile');
   };
 
-  const handleLogout = () => {
-    handleUserMenuClose();
-    logout();
-    ToastMessage('success', 'Logout successfully!');
-    navigate(ROUTES.AUTH.SIGNIN);
-  };
+  // const handleLogout = () => {
+  //   handleUserMenuClose();
+  //   logout();
+  //   ToastMessage('success', 'Logout successfully!');
+  //   navigate(ROUTES.AUTH.SIGNIN);
+  // };
 
   const userMenuContent = (
     <Box
@@ -123,7 +128,7 @@ export const SidebarUserMenu: React.FC<SidebarUserMenuProps> = ({ open }) => {
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
+        <MenuItem sx={{ color: 'error.main' }}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" color="error" />
           </ListItemIcon>
