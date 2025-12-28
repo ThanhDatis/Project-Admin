@@ -3,7 +3,7 @@ import { Avatar, Box, ListItemIcon, ListItemText, Menu, MenuItem, Typography } f
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ROUTES } from '../../../../../shared/common/constant';
+import { ROUTES } from '../../../../../shared/config/constant';
 // import { borderLine } from '../../../common/color';
 // import { useAuthStore } from '../../../store';
 // import ToastMessage from '../../toastMessage';

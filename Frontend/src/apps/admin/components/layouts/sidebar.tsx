@@ -5,7 +5,7 @@ import { Box, Divider, IconButton, useMediaQuery, Drawer } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import { borderLine, primaryBackgroundSidebar } from '../../../../shared/common/colors';
-import { DRAWER_WIDTH } from '../../../../shared/common/constant';
+import { DRAWER_WIDTH } from '../../../../shared/config/constant';
 
 import { SidebarHeader } from './components/sidebarHeader';
 import { SidebarNavigation } from './components/sidebarNavigation';

@@ -7,7 +7,7 @@ import SpaceDashboardRoundedIcon from '@mui/icons-material/SpaceDashboardRounded
 import { Box, List } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { ROUTES } from '../../../../../shared/common/constant';
+import { ROUTES } from '../../../../../shared/config/constant';
 
 import { SidebarMenuItem } from './sidebarMenuItem';
 
