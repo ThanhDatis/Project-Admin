@@ -5,7 +5,7 @@
   line-height: 1.5;
   font-weight: 400;
   --animationColor: #fff;
-  --animationColorBody: #fff;
+  /* --animationColorBody: #fff; */
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -17,8 +17,8 @@
 }
 html {
   height: 100%;
-  background-color: #fff !important;
-  background: #fff !important;
+  /* background-color: #fff !important; */
+  background: #F8F9FA !important;
 }
 a {
   font-weight: 500;

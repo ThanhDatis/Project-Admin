@@ -1,8 +1,8 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 
-import theme from './common/theme/theme';
-import AppRouter from './routes/AppRouter';
+import theme from './shared/common/theme/theme';
+import AppRouter from './shared/routes/AppRouter';
 import './App.css';
 
 function App() {
