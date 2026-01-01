@@ -67,7 +67,7 @@ const theme = createTheme({
     MuiTypography: {
       styleOverrides: {
         root: {
-          a: { color: labelColor },
+          // a: { color: labelColor },
         },
       },
       defaultProps: {

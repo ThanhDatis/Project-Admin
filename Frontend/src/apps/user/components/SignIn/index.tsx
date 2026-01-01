@@ -9,10 +9,17 @@ import { Formik, Form } from 'formik';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 
-import { orange } from '../../../../shared/common/colors';
+import {
+  borderLight,
+  borderLine,
+  gray,
+  orange,
+  primaryTextColor,
+  secondaryTextColor,
+} from '../../../../shared/common/colors';
 import { Input } from '../../../../shared/components/fields';
 import LoadingButton from '../../../../shared/components/loadingButton';
-import type { SignInFormValues } from '../../../../shared/types';
+import type { SignInFormValues } from '../../types';
 
 interface SignInProps {
   onSubmit: (values: SignInFormValues) => Promise<void>;
@@ -62,7 +69,6 @@ const SignIn: React.FC<SignInProps> = ({
           variant="h4"
           sx={{
             fontWeight: 700,
-            color: '#1A1A1A',
             marginBottom: '8px',
           }}
         >
@@ -71,7 +77,7 @@ const SignIn: React.FC<SignInProps> = ({
         <Typography
           variant="body1"
           sx={{
-            color: '#666666',
+            color: gray[600],
             fontSize: '14px',
           }}
         >
@@ -99,7 +105,7 @@ const SignIn: React.FC<SignInProps> = ({
                 typeInput="email"
                 prefixIcon={
                   <InputAdornment position="start">
-                    <EmailIcon sx={{ color: '#666', fontSize: 20 }} />
+                    <EmailIcon sx={{ color: gray[600], fontSize: 20 }} />
                   </InputAdornment>
                 }
               />
@@ -118,7 +124,7 @@ const SignIn: React.FC<SignInProps> = ({
                 typeInput={showPassword ? 'text' : 'password'}
                 prefixIcon={
                   <InputAdornment position="start">
-                    <LockIcon sx={{ color: '#666', fontSize: 20 }} />
+                    <LockIcon sx={{ color: gray[600], fontSize: 20 }} />
                   </InputAdornment>
                 }
                 suffixIcon={
@@ -130,9 +136,9 @@ const SignIn: React.FC<SignInProps> = ({
                       size="small"
                     >
                       {showPassword ? (
-                        <VisibilityOffIcon sx={{ fontSize: 20, color: '#666' }} />
+                        <VisibilityOffIcon sx={{ fontSize: 20, color: gray[600] }} />
                       ) : (
-                        <VisibilityIcon sx={{ fontSize: 20, color: '#666' }} />
+                        <VisibilityIcon sx={{ fontSize: 20, color: gray[600] }} />
                       )}
                     </IconButton>
                   </InputAdornment>
@@ -147,7 +153,6 @@ const SignIn: React.FC<SignInProps> = ({
                 sx={{
                   color: orange[600],
                   fontSize: '14px',
-                  fontWeight: 500,
                   '&:hover': {
                     textDecoration: 'underline',
                   },
@@ -164,12 +169,11 @@ const SignIn: React.FC<SignInProps> = ({
               loading={isLoading}
               sx={{
                 backgroundColor: orange[600],
-                color: '#fff',
+                color: secondaryTextColor,
                 padding: '12px',
                 fontSize: '16px',
                 fontWeight: 600,
                 textTransform: 'none',
-                borderRadius: '8px',
                 marginBottom: '24px',
                 '&:hover': {
                   backgroundColor: orange[700],
@@ -193,7 +197,7 @@ const SignIn: React.FC<SignInProps> = ({
               <Typography
                 sx={{
                   padding: '0 16px',
-                  color: '#999',
+                  color: gray[500],
                   fontSize: '14px',
                 }}
               >
@@ -215,14 +219,14 @@ const SignIn: React.FC<SignInProps> = ({
                 startIcon={<GoogleIcon />}
                 onClick={() => onSocialLogin('google')}
                 sx={{
-                  borderColor: '#E0E0E0',
-                  color: '#1A1A1A',
+                  borderColor: borderLight,
+                  color: primaryTextColor,
                   padding: '10px',
                   textTransform: 'none',
                   fontWeight: 500,
                   '&:hover': {
-                    borderColor: '#BDBDBD',
-                    backgroundColor: '#F5F5F5',
+                    borderColor: borderLine,
+                    backgroundColor: gray[100],
                   },
                 }}
               >
@@ -234,14 +238,14 @@ const SignIn: React.FC<SignInProps> = ({
                 startIcon={<FacebookIcon />}
                 onClick={() => onSocialLogin('facebook')}
                 sx={{
-                  borderColor: '#E0E0E0',
-                  color: '#1A1A1A',
+                  borderColor: borderLight,
+                  color: primaryTextColor,
                   padding: '10px',
                   textTransform: 'none',
                   fontWeight: 500,
                   '&:hover': {
-                    borderColor: '#BDBDBD',
-                    backgroundColor: '#F5F5F5',
+                    borderColor: borderLine,
+                    backgroundColor: gray[100],
                   },
                 }}
               >
@@ -253,8 +257,7 @@ const SignIn: React.FC<SignInProps> = ({
               <Typography
                 variant="body2"
                 sx={{
-                  color: '#666',
-                  fontSize: '14px',
+                  color: gray[600],
                 }}
               >
                 Don't have an account?{' '}
@@ -265,8 +268,6 @@ const SignIn: React.FC<SignInProps> = ({
                   underline="none"
                   sx={{
                     color: orange[600],
-                    fontWeight: 600,
-                    cursor: 'pointer',
                     '&:hover': {
                       textDecoration: 'underline',
                     },

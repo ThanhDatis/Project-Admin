@@ -1,7 +1,7 @@
 export const defaultStyleInput = {
   '.MuiInputBase-root': {
     borderRadius: '8px',
-    paddingRight: '0px !important',
+    // paddingRight: '0px !important',
     minHeight: '46px',
     fieldset: { boxSizing: ' border-box' },
   },

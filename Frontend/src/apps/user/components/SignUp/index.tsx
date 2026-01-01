@@ -21,10 +21,18 @@ import { Formik, Form } from 'formik';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
 
-import { errorColor, orange } from '../../../../shared/common/colors';
+import {
+  borderLight,
+  borderLine,
+  errorColor,
+  gray,
+  orange,
+  primaryTextColor,
+  secondaryTextColor,
+} from '../../../../shared/common/colors';
 import { Input } from '../../../../shared/components/fields';
 import LoadingButton from '../../../../shared/components/loadingButton';
-import type { SignUpFormValues } from '../../../../shared/types';
+import type { SignUpFormValues } from '../../types';
 
 interface SignUpProps {
   onSubmit: (values: SignUpFormValues) => Promise<void>;
@@ -100,7 +108,6 @@ const SignUp: React.FC<SignUpProps> = ({
             variant="h5"
             sx={{
               fontWeight: 700,
-              color: '#1A1A1A',
             }}
           >
             HotelSocial
@@ -111,7 +118,6 @@ const SignUp: React.FC<SignUpProps> = ({
           variant="h4"
           sx={{
             fontWeight: 700,
-            color: '#1A1A1A',
             marginBottom: '8px',
           }}
         >
@@ -120,7 +126,7 @@ const SignUp: React.FC<SignUpProps> = ({
         <Typography
           variant="body1"
           sx={{
-            color: '#666666',
+            color: gray[600],
             fontSize: '14px',
           }}
         >
@@ -150,7 +156,7 @@ const SignUp: React.FC<SignUpProps> = ({
                 onBlur={handleBlur}
                 prefixIcon={
                   <InputAdornment position="start">
-                    <PersonIcon sx={{ color: '#666', fontSize: 20 }} />
+                    <PersonIcon sx={{ color: gray[600], fontSize: 20 }} />
                   </InputAdornment>
                 }
               />
@@ -170,7 +176,7 @@ const SignUp: React.FC<SignUpProps> = ({
                 typeInput="email"
                 prefixIcon={
                   <InputAdornment position="start">
-                    <EmailIcon sx={{ color: '#666', fontSize: 20 }} />
+                    <EmailIcon sx={{ color: gray[600], fontSize: 20 }} />
                   </InputAdornment>
                 }
               />
@@ -197,7 +203,7 @@ const SignUp: React.FC<SignUpProps> = ({
                 typeInput={showPassword ? 'text' : 'password'}
                 prefixIcon={
                   <InputAdornment position="start">
-                    <LockIcon sx={{ color: '#666', fontSize: 20 }} />
+                    <LockIcon sx={{ color: gray[600], fontSize: 20 }} />
                   </InputAdornment>
                 }
                 suffixIcon={
@@ -208,9 +214,9 @@ const SignUp: React.FC<SignUpProps> = ({
                       size="small"
                     >
                       {showPassword ? (
-                        <VisibilityOffIcon sx={{ fontSize: 20, color: '#666' }} />
+                        <VisibilityOffIcon sx={{ fontSize: 20, color: gray[600] }} />
                       ) : (
-                        <VisibilityIcon sx={{ fontSize: 20, color: '#666' }} />
+                        <VisibilityIcon sx={{ fontSize: 20, color: gray[600] }} />
                       )}
                     </IconButton>
                   </InputAdornment>
@@ -229,7 +235,7 @@ const SignUp: React.FC<SignUpProps> = ({
                 typeInput={showConfirmPassword ? 'text' : 'password'}
                 prefixIcon={
                   <InputAdornment position="start">
-                    <LockIcon sx={{ color: '#666', fontSize: 20 }} />
+                    <LockIcon sx={{ color: gray[600], fontSize: 20 }} />
                   </InputAdornment>
                 }
                 suffixIcon={
@@ -240,9 +246,9 @@ const SignUp: React.FC<SignUpProps> = ({
                       size="small"
                     >
                       {showConfirmPassword ? (
-                        <VisibilityOffIcon sx={{ fontSize: 20, color: '#666' }} />
+                        <VisibilityOffIcon sx={{ fontSize: 20, color: gray[600] }} />
                       ) : (
-                        <VisibilityIcon sx={{ fontSize: 20, color: '#666' }} />
+                        <VisibilityIcon sx={{ fontSize: 20, color: gray[600] }} />
                       )}
                     </IconButton>
                   </InputAdornment>
@@ -265,7 +271,7 @@ const SignUp: React.FC<SignUpProps> = ({
                 />
               }
               label={
-                <Typography sx={{ fontSize: '14px', color: '#666' }}>
+                <Typography sx={{ fontSize: '14px', color: gray[600] }}>
                   I agree to the{' '}
                   <Link
                     href="#"
@@ -316,7 +322,7 @@ const SignUp: React.FC<SignUpProps> = ({
               loading={isLoading}
               sx={{
                 backgroundColor: orange[600],
-                color: '#fff',
+                color: secondaryTextColor,
                 padding: '12px',
                 fontSize: '16px',
                 fontWeight: 600,
@@ -347,7 +353,7 @@ const SignUp: React.FC<SignUpProps> = ({
               <Typography
                 sx={{
                   padding: '0 16px',
-                  color: '#999',
+                  color: gray[500],
                   fontSize: '14px',
                 }}
               >
@@ -370,14 +376,14 @@ const SignUp: React.FC<SignUpProps> = ({
                 startIcon={<GoogleIcon />}
                 onClick={() => onSocialSignUp('google')}
                 sx={{
-                  borderColor: '#E0E0E0',
-                  color: '#1A1A1A',
+                  borderColor: borderLight,
+                  color: primaryTextColor,
                   padding: '10px',
                   textTransform: 'none',
                   fontWeight: 500,
                   '&:hover': {
-                    borderColor: '#BDBDBD',
-                    backgroundColor: '#F5F5F5',
+                    borderColor: borderLine,
+                    backgroundColor: gray[100],
                   },
                 }}
               >
@@ -389,14 +395,14 @@ const SignUp: React.FC<SignUpProps> = ({
                 startIcon={<FacebookIcon />}
                 onClick={() => onSocialSignUp('facebook')}
                 sx={{
-                  borderColor: '#E0E0E0',
-                  color: '#1A1A1A',
+                  borderColor: borderLight,
+                  color: primaryTextColor,
                   padding: '10px',
                   textTransform: 'none',
                   fontWeight: 500,
                   '&:hover': {
-                    borderColor: '#BDBDBD',
-                    backgroundColor: '#F5F5F5',
+                    borderColor: borderLine,
+                    backgroundColor: gray[100],
                   },
                 }}
               >
@@ -409,7 +415,7 @@ const SignUp: React.FC<SignUpProps> = ({
               <Typography
                 variant="body2"
                 sx={{
-                  color: '#666',
+                  color: gray[600],
                   fontSize: '14px',
                 }}
               >

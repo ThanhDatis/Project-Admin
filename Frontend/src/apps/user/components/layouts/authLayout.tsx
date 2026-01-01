@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 
 import backgroundImage from '../../../../shared/assets/lounge-2930070_1920.jpg';
 import ToastMessage from '../../../../shared/components/toastMessage';
-import type { SignInFormValues, SignUpFormValues } from '../../../../shared/types';
 import SignIn from '../../components/SignIn';
 import SignUp from '../../components/SignUp';
+import type { SignInFormValues, SignUpFormValues } from '../../types';
 
 const AuthLayout: React.FC = () => {
   const [isSignIn, setIsSignIn] = useState(true);
