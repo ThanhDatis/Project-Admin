@@ -1,4 +1,3 @@
-// Authentication Types
 export interface SignInFormValues {
   email: string;
   password: string;
