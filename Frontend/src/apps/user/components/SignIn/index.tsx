@@ -57,7 +57,6 @@ const SignIn: React.FC<SignInProps> = ({
         padding: '40px',
       }}
     >
-      {/* Header */}
       <Box sx={{ marginBottom: '32px', textAlign: 'center' }}>
         <Typography
           variant="h4"
@@ -80,7 +79,6 @@ const SignIn: React.FC<SignInProps> = ({
         </Typography>
       </Box>
 
-      {/* Form */}
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -88,7 +86,6 @@ const SignIn: React.FC<SignInProps> = ({
       >
         {({ values, errors, touched, handleChange, handleBlur }) => (
           <Form>
-            {/* Email */}
             <Box sx={{ marginBottom: '16px' }}>
               <Input
                 label="Email"
@@ -108,7 +105,6 @@ const SignIn: React.FC<SignInProps> = ({
               />
             </Box>
 
-            {/* Password */}
             <Box sx={{ marginBottom: '8px' }}>
               <Input
                 label="Password"
@@ -144,7 +140,6 @@ const SignIn: React.FC<SignInProps> = ({
               />
             </Box>
 
-            {/* Forgot Password */}
             <Box sx={{ textAlign: 'right', marginBottom: '24px' }}>
               <Link
                 href="#"
@@ -162,7 +157,6 @@ const SignIn: React.FC<SignInProps> = ({
               </Link>
             </Box>
 
-            {/* Sign In Button */}
             <LoadingButton
               type="submit"
               fullWidth
@@ -188,7 +182,6 @@ const SignIn: React.FC<SignInProps> = ({
               Sign In
             </LoadingButton>
 
-            {/* Divider */}
             <Box
               sx={{
                 display: 'flex',
@@ -209,7 +202,6 @@ const SignIn: React.FC<SignInProps> = ({
               <Divider sx={{ flex: 1 }} />
             </Box>
 
-            {/* Social Login */}
             <Box
               sx={{
                 display: 'flex',
@@ -257,7 +249,6 @@ const SignIn: React.FC<SignInProps> = ({
               </Button>
             </Box>
 
-            {/* Footer */}
             <Box sx={{ textAlign: 'center' }}>
               <Typography
                 variant="body2"
