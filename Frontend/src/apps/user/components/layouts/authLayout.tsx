@@ -1,4 +1,5 @@
-import { Box, Slide } from '@mui/material';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 
 import backgroundImage from '../../../../shared/assets/lounge-2930070_1920.jpg';
@@ -10,149 +11,122 @@ import type { SignInFormValues, SignUpFormValues } from '../../types';
 const AuthLayout: React.FC = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Handle Sign In
-  const handleSignIn = async (values: SignInFormValues) => {
+  const handleSignIn = async (_values: SignInFormValues) => {
     try {
       setIsLoading(true);
-      console.log('Sign In values:', values);
-
-      // TODO: Call API here
-      // await authService.signIn(values);
-
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
       ToastMessage('success', 'Đăng nhập thành công!');
     } catch (error) {
-      ToastMessage('error', 'Đăng nhập thất bại. Vui lòng thử lại!');
-      console.error(error);
+      ToastMessage('error', 'Đăng nhập thất bại!');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle Sign Up
-  const handleSignUp = async (values: SignUpFormValues) => {
+  const handleSignUp = async (_values: SignUpFormValues) => {
     try {
       setIsLoading(true);
-      console.log('Sign Up values:', values);
-
-      // TODO: Call API here
-      // await authService.signUp(values);
-
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      ToastMessage('success', 'Đăng ký thành công! Vui lòng đăng nhập.');
-
-      // Switch to Sign In after successful sign up
+      ToastMessage('success', 'Đăng ký thành công!');
       setTimeout(() => setIsSignIn(true), 1000);
     } catch (error) {
-      ToastMessage('error', 'Đăng ký thất bại. Vui lòng thử lại!');
-      console.error(error);
+      ToastMessage('error', 'Đăng ký thất bại!');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Handle Social Auth
   const handleSocialAuth = (provider: 'google' | 'facebook') => {
     console.log(`Social auth with ${provider}`);
-    ToastMessage('info', `Đang kết nối với ${provider}...`);
-
-    // TODO: Implement social authentication
   };
-
-  // Switch between forms
-  const switchToSignUp = () => setIsSignIn(false);
-  const switchToSignIn = () => setIsSignIn(true);
 
   return (
     <Box
       sx={{
-        display: 'flex',
-        minHeight: '100vh',
+        position: 'relative',
+        width: '100vw',
+        height: '100vh',
         overflow: 'hidden',
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        display: 'flex',
+        alignItems: 'center',
       }}
     >
-      {/* Left Side - Background Image */}
       <Box
         sx={{
-          flex: 1,
-          position: 'relative',
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          transition: 'background-image 0.5s ease-in-out',
-          minHeight: '100vh',
-          display: { xs: 'none', md: 'block' },
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          zIndex: 1,
         }}
-      >
-        {/* Overlay */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-          }}
-        />
-      </Box>
+      />
 
-      {/* Right Side - Auth Forms */}
       <Box
         sx={{
-          flex: 1,
+          position: 'absolute',
+          zIndex: 2,
+          top: 0,
+          left: 0,
+          width: { xs: '100%', md: '50%' },
+          height: '100%',
+          backgroundColor: '#fff',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#fff',
-          position: 'relative',
-          overflow: 'hidden',
-          minHeight: '100vh',
-          padding: { xs: '20px', sm: '40px' },
+          transition: 'transform 0.7s cubic-bezier(0.6, -0.28, 0.735, 0.045)',
+          transform: isMobile ? 'none' : isSignIn ? 'translateX(100%)' : 'translateX(0%)',
         }}
       >
-        {/* Sign In Form with Slide Animation */}
-        <Slide direction="right" in={isSignIn} mountOnEnter unmountOnExit timeout={500}>
+        <Box sx={{ width: '100%', position: 'relative' }}>
           <Box
             sx={{
-              position: 'absolute',
+              opacity: isSignIn ? 1 : 0,
+              visibility: isSignIn ? 'visible' : 'hidden',
+              transition: 'all 0.4s ease',
+              transitionDelay: isSignIn ? '0.3s' : '0s',
+              position: isSignIn ? 'relative' : 'absolute',
+              top: 0,
               width: '100%',
               display: 'flex',
               justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             <SignIn
               onSubmit={handleSignIn}
-              onSwitchToSignUp={switchToSignUp}
+              onSwitchToSignUp={() => setIsSignIn(false)}
               onSocialLogin={handleSocialAuth}
               isLoading={isLoading}
             />
           </Box>
-        </Slide>
 
-        {/* Sign Up Form with Slide Animation */}
-        <Slide direction="left" in={!isSignIn} mountOnEnter unmountOnExit timeout={500}>
           <Box
             sx={{
-              position: 'absolute',
+              opacity: !isSignIn ? 1 : 0,
+              visibility: !isSignIn ? 'visible' : 'hidden',
+              transition: 'all 0.4s ease',
+              transitionDelay: !isSignIn ? '0.3s' : '0s',
+              position: !isSignIn ? 'relative' : 'absolute',
+              top: 0,
               width: '100%',
               display: 'flex',
               justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             <SignUp
               onSubmit={handleSignUp}
-              onSwitchToSignIn={switchToSignIn}
+              onSwitchToSignIn={() => setIsSignIn(true)}
               onSocialSignUp={handleSocialAuth}
               isLoading={isLoading}
             />
           </Box>
-        </Slide>
+        </Box>
       </Box>
     </Box>
   );
