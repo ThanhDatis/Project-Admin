@@ -1,47 +1,24 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 
 import backgroundImage from '../../../../shared/assets/lounge-2930070_1920.jpg';
-import ToastMessage from '../../../../shared/components/toastMessage';
-import SignIn from '../../components/SignIn';
+import SignInForm from '../../components/SignIn';
 import SignUp from '../../components/SignUp';
-import type { SignInFormValues, SignUpFormValues } from '../../types';
+import { useSignIn } from '../../pages/site/hooks/useSignIn';
+import { useSignUp } from '../../pages/site/hooks/useSignUp';
 
 const AuthLayout: React.FC = () => {
   const [isSignIn, setIsSignIn] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  const handleSignIn = async (_values: SignInFormValues) => {
-    try {
-      setIsLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      ToastMessage('success', 'Đăng nhập thành công!');
-    } catch (error) {
-      ToastMessage('error', 'Đăng nhập thất bại!');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Hooks xử lý logic
+  const { isLoading: isSignInLoading, handleSignIn, handleSocialLogin } = useSignIn();
+  const { isLoading: isSignUpLoading, handleSignUp, handleSocialSignUp } = useSignUp();
 
-  const handleSignUp = async (_values: SignUpFormValues) => {
-    try {
-      setIsLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      ToastMessage('success', 'Đăng ký thành công!');
-      setTimeout(() => setIsSignIn(true), 1000);
-    } catch (error) {
-      ToastMessage('error', 'Đăng ký thất bại!');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSocialAuth = (provider: 'google' | 'facebook') => {
-    console.log(`Social auth with ${provider}`);
-  };
+  // Handler chuyển đổi giữa SignIn và SignUp
+  const switchToSignUp = () => setIsSignIn(false);
+  const switchToSignIn = () => setIsSignIn(true);
 
   return (
     <Box
@@ -57,6 +34,7 @@ const AuthLayout: React.FC = () => {
         alignItems: 'center',
       }}
     >
+      {/* Background overlay */}
       <Box
         sx={{
           position: 'absolute',
@@ -66,6 +44,7 @@ const AuthLayout: React.FC = () => {
         }}
       />
 
+      {/* Form container with slide animation */}
       <Box
         sx={{
           position: 'absolute',
@@ -83,6 +62,7 @@ const AuthLayout: React.FC = () => {
         }}
       >
         <Box sx={{ width: '100%', position: 'relative' }}>
+          {/* SignIn Form */}
           <Box
             sx={{
               opacity: isSignIn ? 1 : 0,
@@ -97,14 +77,15 @@ const AuthLayout: React.FC = () => {
               alignItems: 'center',
             }}
           >
-            <SignIn
+            <SignInForm
               onSubmit={handleSignIn}
-              onSwitchToSignUp={() => setIsSignIn(false)}
-              onSocialLogin={handleSocialAuth}
-              isLoading={isLoading}
+              onSwitchToSignUp={switchToSignUp}
+              onSocialLogin={handleSocialLogin}
+              isLoading={isSignInLoading}
             />
           </Box>
 
+          {/* SignUp Form */}
           <Box
             sx={{
               opacity: !isSignIn ? 1 : 0,
@@ -120,10 +101,10 @@ const AuthLayout: React.FC = () => {
             }}
           >
             <SignUp
-              onSubmit={handleSignUp}
-              onSwitchToSignIn={() => setIsSignIn(true)}
-              onSocialSignUp={handleSocialAuth}
-              isLoading={isLoading}
+              onSubmit={(values) => handleSignUp(values, switchToSignIn)}
+              onSwitchToSignIn={switchToSignIn}
+              onSocialSignUp={handleSocialSignUp}
+              isLoading={isSignUpLoading}
             />
           </Box>
         </Box>

@@ -416,7 +416,6 @@ const SignUp: React.FC<SignUpProps> = ({
                 variant="body2"
                 sx={{
                   color: gray[600],
-                  fontSize: '14px',
                 }}
               >
                 Already have an account?{' '}
