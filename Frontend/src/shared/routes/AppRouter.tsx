@@ -13,7 +13,7 @@ const AppRouter = () => {
         <Route path="/auth/signin" element={<SignInPage />} />
         <Route path="/auth/signup" element={<SignUpPage />} />
         <Route path="/auth" element={<Navigate to="/auth/signin" replace />} />
-        <Route path="/" element={<Navigate to="/auth/signin" replace />} />
+        {/* <Route path="/" element={<Navigate to="/auth/signin" replace />} /> */}
 
         {/* Catch all - redirect to signin */}
         <Route path="*" element={<Navigate to="/auth/signin" replace />} />

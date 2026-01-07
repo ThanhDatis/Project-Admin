@@ -1,24 +1,39 @@
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import backgroundImage from '../../../../shared/assets/lounge-2930070_1920.jpg';
-import SignInForm from '../../components/SignIn';
+import SignIn from '../../components/SignIn';
 import SignUp from '../../components/SignUp';
 import { useSignIn } from '../../pages/site/hooks/useSignIn';
 import { useSignUp } from '../../pages/site/hooks/useSignUp';
 
-const AuthLayout: React.FC = () => {
-  const [isSignIn, setIsSignIn] = useState(true);
+interface AuthLayoutProps {
+  defaultForm?: 'signin' | 'signup';
+}
+
+const AuthLayout: React.FC<AuthLayoutProps> = ({ defaultForm = 'signin' }) => {
+  const [isSignIn, setIsSignIn] = useState(defaultForm === 'signin');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const navigate = useNavigate();
 
-  // Hooks xử lý logic
+  // useEffect(() => {
+  //   setIsSignIn(defaultForm === 'signin');
+  // }, [defaultForm]);
+
   const { isLoading: isSignInLoading, handleSignIn, handleSocialLogin } = useSignIn();
   const { isLoading: isSignUpLoading, handleSignUp, handleSocialSignUp } = useSignUp();
 
   // Handler chuyển đổi giữa SignIn và SignUp
-  const switchToSignUp = () => setIsSignIn(false);
-  const switchToSignIn = () => setIsSignIn(true);
+  const switchToSignUp = () => {
+    setIsSignIn(false);
+    navigate('/auth/signup');
+  };
+  const switchToSignIn = () => {
+    setIsSignIn(true);
+    navigate('/auth/signin');
+  };
 
   return (
     <Box
@@ -34,7 +49,6 @@ const AuthLayout: React.FC = () => {
         alignItems: 'center',
       }}
     >
-      {/* Background overlay */}
       <Box
         sx={{
           position: 'absolute',
@@ -62,7 +76,6 @@ const AuthLayout: React.FC = () => {
         }}
       >
         <Box sx={{ width: '100%', position: 'relative' }}>
-          {/* SignIn Form */}
           <Box
             sx={{
               opacity: isSignIn ? 1 : 0,
@@ -77,7 +90,7 @@ const AuthLayout: React.FC = () => {
               alignItems: 'center',
             }}
           >
-            <SignInForm
+            <SignIn
               onSubmit={handleSignIn}
               onSwitchToSignUp={switchToSignUp}
               onSocialLogin={handleSocialLogin}
@@ -85,7 +98,6 @@ const AuthLayout: React.FC = () => {
             />
           </Box>
 
-          {/* SignUp Form */}
           <Box
             sx={{
               opacity: !isSignIn ? 1 : 0,
