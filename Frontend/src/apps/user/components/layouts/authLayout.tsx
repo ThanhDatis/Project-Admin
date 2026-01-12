@@ -1,10 +1,10 @@
 import { Box, useMediaQuery, useTheme } from '@mui/material';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import backgroundImage from '../../../../shared/assets/lounge-2930070_1920.jpg';
-import SignIn from '../../components/SignIn';
-import SignUp from '../../components/SignUp';
+import SignInForm from '../../components/SignIn';
+import SignUpForm from '../../components/SignUp';
 import { useSignIn } from '../../pages/site/hooks/useSignIn';
 import { useSignUp } from '../../pages/site/hooks/useSignUp';
 
@@ -17,22 +17,24 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ defaultForm = 'signin' }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // useEffect(() => {
-  //   setIsSignIn(defaultForm === 'signin');
-  // }, [defaultForm]);
+  useEffect(() => {
+    const shouldBeSignIn = location.pathname.includes('signin');
+    setIsSignIn(shouldBeSignIn);
+  }, [location.pathname]);
 
   const { isLoading: isSignInLoading, handleSignIn, handleSocialLogin } = useSignIn();
   const { isLoading: isSignUpLoading, handleSignUp, handleSocialSignUp } = useSignUp();
 
   // Handler chuyển đổi giữa SignIn và SignUp
   const switchToSignUp = () => {
-    setIsSignIn(false);
-    navigate('/auth/signup');
+    // setIsSignIn(false);
+    navigate('/auth/signup', { replace: true });
   };
   const switchToSignIn = () => {
-    setIsSignIn(true);
-    navigate('/auth/signin');
+    // setIsSignIn(true);
+    navigate('/auth/signin', { replace: true });
   };
 
   return (
@@ -90,7 +92,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ defaultForm = 'signin' }) => {
               alignItems: 'center',
             }}
           >
-            <SignIn
+            <SignInForm
               onSubmit={handleSignIn}
               onSwitchToSignUp={switchToSignUp}
               onSocialLogin={handleSocialLogin}
@@ -112,7 +114,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ defaultForm = 'signin' }) => {
               alignItems: 'center',
             }}
           >
-            <SignUp
+            <SignUpForm
               onSubmit={(values) => handleSignUp(values, switchToSignIn)}
               onSwitchToSignIn={switchToSignIn}
               onSocialSignUp={handleSocialSignUp}
