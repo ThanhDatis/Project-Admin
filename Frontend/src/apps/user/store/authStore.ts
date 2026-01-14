@@ -1,22 +1,31 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import type { UserProfile } from '../types';
+import type { AuthUser, AuthTokens } from '../types';
+import { tokenService } from '../utils';
 
 interface AuthState {
-  user: UserProfile | null;
+  // State
+  user: AuthUser | null;
+  tokens: AuthTokens | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 
-  setUser: (user: UserProfile | null) => void;
+  // Actions
+  setUser: (user: AuthUser | null) => void;
+  setTokens: (tokens: AuthTokens | null) => void;
   setLoading: (loading: boolean) => void;
   logout: () => void;
+
+  // Helper actions
+  initializeAuth: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, _get) => ({
       user: null,
+      tokens: null,
       isAuthenticated: false,
       isLoading: false,
 
@@ -26,18 +35,37 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: !!user,
         }),
 
+      setTokens: (tokens) => {
+        if (tokens) {
+          tokenService.saveTokens(tokens);
+        } else {
+          tokenService.clearTokens();
+        }
+        set({ tokens });
+      },
+
       setLoading: (loading) =>
         set({
           isLoading: loading,
         }),
 
       logout: () => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        tokenService.clearTokens();
+
         set({
           user: null,
+          tokens: null,
           isAuthenticated: false,
         });
+      },
+
+      initializeAuth: () => {
+        const tokens = tokenService.getTokens();
+        if (tokens) {
+          set({ tokens });
+          // Note: user profile should be fetched from API
+          // This is handled in App.tsx or AuthProvider
+        }
       },
     }),
     {
