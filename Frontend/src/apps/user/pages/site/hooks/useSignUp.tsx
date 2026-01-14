@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
+import type { SignUpFormValues, RegisterCustomerRequest } from '../../../../../apps/user/types';
 import ToastMessage from '../../../../../shared/components/toastMessage';
-import type { SignUpFormValues } from '../../../types';
+import { authService } from '../../../services';
+import { handleAPIError } from '../../../utils';
 
 export const useSignUp = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,20 +11,32 @@ export const useSignUp = () => {
   const handleSignUp = async (values: SignUpFormValues, onSuccess?: () => void) => {
     try {
       setIsLoading(true);
-      // TODO: Call API sign up
-      console.log('Sign up with:', values);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      ToastMessage('success', 'Đăng ký thành công!');
 
-      // Chuyển sang form đăng nhập sau khi đăng ký thành công
+      const payload: RegisterCustomerRequest = {
+        fullName: values.fullName,
+        email: values.email,
+        password: values.password,
+        phoneNumber: values.phoneNumber,
+      };
+
+      const response = await authService.register(payload);
+
+      if (!response.success) {
+        throw new Error(response.message || 'Đăng ký thất bại');
+      }
+
+      ToastMessage('success', 'Đăng ký thành công! Vui lòng đăng nhập.');
+
       if (onSuccess) {
         setTimeout(() => {
           onSuccess();
         }, 1000);
       }
     } catch (error) {
+      const errorMessage = handleAPIError(error);
+      ToastMessage('error', errorMessage);
+
       console.error('Sign up error:', error);
-      ToastMessage('error', 'Đăng ký thất bại!');
     } finally {
       setIsLoading(false);
     }
@@ -30,9 +44,12 @@ export const useSignUp = () => {
 
   const handleSocialSignUp = (provider: 'google' | 'facebook') => {
     try {
-      // TODO: Implement social sign up API
-      console.log(`Social sign up with ${provider}`);
-      // Example: window.location.href = `/api/auth/${provider}`;
+      if (provider === 'google') {
+        const googleLoginUrl = authService.getGoogleLoginUrl();
+        window.location.href = googleLoginUrl;
+      } else {
+        ToastMessage('info', 'Facebook sign up đang được phát triển');
+      }
     } catch (error) {
       console.error('Social sign up error:', error);
       ToastMessage('error', `Đăng ký ${provider} thất bại!`);
