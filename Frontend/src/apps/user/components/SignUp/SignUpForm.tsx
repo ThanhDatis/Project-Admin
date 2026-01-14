@@ -1,6 +1,7 @@
 import EmailIcon from '@mui/icons-material/EmailOutlined';
 import LockIcon from '@mui/icons-material/LockOutlined';
 import PersonIcon from '@mui/icons-material/PersonOutlined';
+import PhoneIcon from '@mui/icons-material/PhoneOutlined';
 import PublicIcon from '@mui/icons-material/Public';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -43,6 +44,12 @@ const validationSchema = Yup.object({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Mật khẩu xác nhận không khớp')
     .required('Vui lòng xác nhận mật khẩu'),
+  phoneNumber: Yup.string()
+    .matches(
+      /^(\+?\d{1,3}[- ]?)?\d{10}$/,
+      'Số điện thoại không hợp lệ. Vui lòng nhập số gồm 10 chữ số',
+    )
+    .required('Vui lòng nhập số điện thoại'),
   agreeTerms: Yup.boolean()
     .oneOf([true], 'Bạn phải đồng ý với điều khoản sử dụng')
     .required('Bạn phải đồng ý với điều khoản sử dụng'),
@@ -61,6 +68,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
     fullName: '',
     email: '',
     password: '',
+    phoneNumber: '',
     confirmPassword: '',
     agreeTerms: false,
   };
@@ -174,6 +182,25 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
                 prefixIcon={
                   <InputAdornment position="start">
                     <EmailIcon sx={{ color: gray[600], fontSize: 20 }} />
+                  </InputAdornment>
+                }
+              />
+            </Box>
+
+            <Box sx={{ marginBottom: '16px' }}>
+              <Input
+                label="Phone number"
+                name="phoneNumber"
+                value={values.phoneNumber}
+                isError={Boolean(touched.phoneNumber && errors.phoneNumber)}
+                errorText={errors.phoneNumber}
+                placeholder="Enter your phone number"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                typeInput="tel"
+                prefixIcon={
+                  <InputAdornment position="start">
+                    <PhoneIcon sx={{ color: gray[600], fontSize: 20 }} />
                   </InputAdornment>
                 }
               />
@@ -330,7 +357,6 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
               Sign Up
             </LoadingButton>
 
-            {/* Social Sign Up - Sử dụng component đã tạo */}
             <SocialLogin onSocialLogin={onSocialSignUp} dividerText="Or sign up with" />
 
             {/* Footer */}
