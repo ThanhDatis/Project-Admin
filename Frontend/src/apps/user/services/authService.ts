@@ -1,24 +1,49 @@
-import axios from 'axios';
+import axios, { type AxiosInstance } from 'axios';
 
-import type { SignInFormValues, SignUpFormValues, AuthResponse } from '../types';
+import type { BaseAPIResponse } from '../../../shared/types/api';
+import type {
+  LoginRequest,
+  LoginResponse,
+  RegisterCustomerRequest,
+  RegisterResponse,
+  UserProfileResponse,
+} from '../types';
+import { tokenService } from '../utils/tokenService';
 
-// Base URL from environment variable
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+/**
+ * API Base URL từ environment variable
+ * Default to localhost:7001 (from JWT issuer in backend)
+ */
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
-const authAPI = axios.create({
-  baseURL: `${API_BASE_URL}/auth`,
+/**
+ * Create Axios instance với base configuration
+ */
+const authAPI: AxiosInstance = axios.create({
+  baseURL: `${API_BASE_URL}/api/Auth`,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 30000,
 });
 
-// Request interceptor to add token
+/**
+ * Request Interceptor
+ * Tự động thêm Authorization header với access token
+ */
 authAPI.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // Skip adding token for auth endpoints that don't require it
+    const publicEndpoints = ['/Login'];
+    const isPublicEndpoint = publicEndpoints.some((endpoint) => config.url?.includes(endpoint));
+
+    if (!isPublicEndpoint) {
+      const token = tokenService.getAccessToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
+
     return config;
   },
   (error) => {
@@ -26,62 +51,195 @@ authAPI.interceptors.request.use(
   },
 );
 
-// Response interceptor to handle errors
+/**
+ * Response Interceptor
+ * Xử lý 401 errors và redirect to login
+ */
 authAPI.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    // Handle 401 Unauthorized
     if (error.response?.status === 401) {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
-      window.location.href = '/auth/signin';
+      // Clear tokens
+      tokenService.clearTokens();
+
+      // Redirect to login page (only if not already there)
+      if (!window.location.pathname.includes('/auth/signin')) {
+        window.location.href = '/auth/signin';
+      }
     }
+
     return Promise.reject(error);
   },
 );
 
 export const authService = {
-  signIn: async (data: SignInFormValues): Promise<AuthResponse> => {
-    const response = await authAPI.post<AuthResponse>('/signin', data);
-    if (response.data.data?.token) {
-      localStorage.setItem('accessToken', response.data.data.token);
+  /**
+   * POST /api/Auth/register-customer
+   */
+  register: async (data: RegisterCustomerRequest): Promise<RegisterResponse> => {
+    const response = await authAPI.post<RegisterResponse>('/register-customer', data);
+    return response.data;
+  },
+
+  /**
+   * POST /api/Auth/login
+   */
+  login: async (data: LoginRequest): Promise<LoginResponse> => {
+    const response = await authAPI.post<LoginResponse>('/Login', data);
+
+    if (response.data.success && response.data.data) {
+      tokenService.saveTokens({
+        accessToken: response.data.data.token,
+        refreshToken: response.data.data.refreshToken,
+      });
     }
+
     return response.data;
   },
 
-  signUp: async (data: SignUpFormValues): Promise<AuthResponse> => {
-    const response = await authAPI.post<AuthResponse>('/signup', data);
+  /**
+   * GET /api/Auth/me
+   */
+  getCurrentUser: async (): Promise<UserProfileResponse> => {
+    const response = await authAPI.get<UserProfileResponse>('/me');
     return response.data;
   },
 
-  signOut: async (): Promise<void> => {
-    await authAPI.post('/signout');
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-  },
+  /**
+   * POST /api/Auth/Refreshtoken
+   */
+  refreshToken: async (token: string, refreshToken: string): Promise<LoginResponse> => {
+    const response = await authAPI.post<LoginResponse>('/Refreshtoken', {
+      token,
+      refreshToken,
+    });
 
-  socialAuth: async (provider: 'google' | 'facebook', token: string): Promise<AuthResponse> => {
-    const response = await authAPI.post<AuthResponse>(`/social/${provider}`, { token });
-    if (response.data.data?.token) {
-      localStorage.setItem('accessToken', response.data.data.token);
+    if (response.data.success && response.data.data) {
+      tokenService.saveTokens({
+        accessToken: response.data.data.token,
+        refreshToken: response.data.data.refreshToken,
+      });
     }
+
     return response.data;
   },
 
-  forgotPassword: async (email: string): Promise<{ success: boolean; message: string }> => {
-    const response = await authAPI.post('/forgot-password', { email });
+  logout: (): void => {
+    tokenService.clearTokens();
+  },
+
+  /**
+   * POST /api/Auth/send-confirmemail
+   */
+  sendConfirmEmail: async (): Promise<BaseAPIResponse> => {
+    const response = await authAPI.post<BaseAPIResponse>('/send-confirmemail');
     return response.data;
   },
 
+  /**
+   * GET /api/Auth/email-confirmation
+   */
+  confirmEmail: async (userId: string, token: string): Promise<BaseAPIResponse> => {
+    const response = await authAPI.get<BaseAPIResponse>('/email-confirmation', {
+      params: { userId, token },
+    });
+    return response.data;
+  },
+
+  /**
+   * GET /api/Auth/google-login
+   */
+  getGoogleLoginUrl: (): string => {
+    return `${API_BASE_URL}/api/Auth/google-login`;
+  },
+
+  /**
+   * POST /api/Auth/forgot-password
+   */
+  forgotPassword: async (email: string, clientUrl: string): Promise<BaseAPIResponse> => {
+    const response = await authAPI.post<BaseAPIResponse>('/forgot-password', {
+      email,
+      clientUrl,
+    });
+    return response.data;
+  },
+
+  /**
+   * POST /api/Auth/resetpassword
+   */
   resetPassword: async (
+    password: string,
+    confirmPassword: string,
+    email: string,
     token: string,
-    newPassword: string,
-  ): Promise<{ success: boolean; message: string }> => {
-    const response = await authAPI.post('/reset-password', { token, newPassword });
+  ): Promise<BaseAPIResponse> => {
+    const response = await authAPI.post<BaseAPIResponse>('/resetpassword', {
+      password,
+      confirmPassword,
+      email,
+      token,
+    });
     return response.data;
   },
 
-  getCurrentUser: async () => {
-    const response = await authAPI.get('/me');
+  /**
+   * PUT /api/Auth/profile
+   */
+  updateProfile: async (
+    userId: string,
+    gender: boolean,
+    address: string,
+    phoneNumber: string,
+  ): Promise<BaseAPIResponse> => {
+    const response = await authAPI.put<BaseAPIResponse>('/profile', {
+      userId,
+      gender,
+      address,
+      phoneNumber,
+    });
+    return response.data;
+  },
+
+  /**
+   * POST /api/Auth/upload-avatar
+   */
+  uploadAvatar: async (file: File, deleteOld: boolean = true): Promise<BaseAPIResponse> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await authAPI.post<BaseAPIResponse>('/upload-avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      params: { deleteOld },
+    });
+    return response.data;
+  },
+
+  /**
+   * GET /api/Auth/{userId}
+   */
+  getUserById: async (userId: string): Promise<UserProfileResponse> => {
+    const response = await authAPI.get<UserProfileResponse>(`/${userId}`);
+    return response.data;
+  },
+
+  /**
+   * GET /api/Auth
+   */
+  getUsers: async (params?: {
+    PageNumber?: number;
+    PageSize?: number;
+    SearchTerm?: string;
+    IsActive?: boolean;
+    Gender?: boolean;
+    Role?: string;
+    HotelId?: string;
+  }): Promise<BaseAPIResponse> => {
+    const response = await authAPI.get<BaseAPIResponse>('/', { params });
     return response.data;
   },
 };
+
+export { authAPI };
