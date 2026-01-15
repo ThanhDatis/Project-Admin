@@ -1,5 +1,4 @@
-import axios, { type AxiosInstance } from 'axios';
-
+import { createServiceInstance } from '../../../shared/lib/axiosInstance';
 import type { BaseAPIResponse } from '../../../shared/types/api';
 import type {
   LoginRequest,
@@ -10,68 +9,7 @@ import type {
 } from '../types';
 import { tokenService } from '../utils/tokenService';
 
-/**
- * API Base URL từ environment variable
- * Default to localhost:7001 (from JWT issuer in backend)
- */
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
-
-/**
- * Create Axios instance với base configuration
- */
-const authAPI: AxiosInstance = axios.create({
-  baseURL: `${API_BASE_URL}/api/Auth`,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  timeout: 30000,
-});
-
-/**
- * Request Interceptor
- * Tự động thêm Authorization header với access token
- */
-authAPI.interceptors.request.use(
-  (config) => {
-    // Skip adding token for auth endpoints that don't require it
-    const publicEndpoints = ['/Login'];
-    const isPublicEndpoint = publicEndpoints.some((endpoint) => config.url?.includes(endpoint));
-
-    if (!isPublicEndpoint) {
-      const token = tokenService.getAccessToken();
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
-
-/**
- * Response Interceptor
- * Xử lý 401 errors và redirect to login
- */
-authAPI.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    // Handle 401 Unauthorized
-    if (error.response?.status === 401) {
-      // Clear tokens
-      tokenService.clearTokens();
-
-      // Redirect to login page (only if not already there)
-      if (!window.location.pathname.includes('/auth/signin')) {
-        window.location.href = '/auth/signin';
-      }
-    }
-
-    return Promise.reject(error);
-  },
-);
+const authAPI = createServiceInstance('/api/Auth');
 
 export const authService = {
   /**
