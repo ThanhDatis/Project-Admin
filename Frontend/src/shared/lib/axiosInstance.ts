@@ -30,7 +30,6 @@ export const axiosInstance: AxiosInstance = axios.create({
  */
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Skip adding token for public endpoints
     if (!isPublicEndpoint(config.url)) {
       const token = tokenService.getAccessToken();
       if (token) {
@@ -38,9 +37,11 @@ axiosInstance.interceptors.request.use(
       }
     }
 
-    // Log request in development
     if (import.meta.env.DEV) {
-      console.log(`🚀 [API Request] ${config.method?.toUpperCase()} ${config.url}`);
+      console.log(`🚀 [API Request] ${config.method?.toUpperCase()} ${config.url}`, {
+        data: config.data,
+        params: config.params,
+      });
     }
 
     return config;
@@ -56,7 +57,6 @@ axiosInstance.interceptors.request.use(
  */
 axiosInstance.interceptors.response.use(
   (response) => {
-    // Log response in development
     if (import.meta.env.DEV) {
       console.log(
         `✅ [API Response] ${response.config.method?.toUpperCase()} ${response.config.url}`,
@@ -69,16 +69,17 @@ axiosInstance.interceptors.response.use(
 
     return response;
   },
+
   async (error) => {
-    // Log error in development
     if (import.meta.env.DEV) {
       console.error(`❌ [API Error] ${error.config?.method?.toUpperCase()} ${error.config?.url}`, {
         status: error.response?.status,
+        statusText: error.response?.statusText,
         data: error.response?.data,
+        message: error.message,
       });
     }
 
-    // Handle 401 Unauthorized
     if (error.response?.status === 401) {
       console.warn('🔒 [Auth] 401 Unauthorized - Clearing tokens');
 
@@ -105,21 +106,5 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   },
 );
-
-export function createServiceInstance(baseURL: string): AxiosInstance {
-  const instance = axios.create({
-    baseURL: `${API_CONFIG.BASE_URL}${baseURL}`,
-    timeout: API_CONFIG.TIMEOUT,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  // Copy interceptors from main instance
-  instance.interceptors.request = axiosInstance.interceptors.request;
-  instance.interceptors.response = axiosInstance.interceptors.response;
-
-  return instance;
-}
 
 export default axiosInstance;

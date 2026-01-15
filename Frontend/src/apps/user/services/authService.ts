@@ -1,4 +1,4 @@
-import { createServiceInstance } from '../../../shared/lib/axiosInstance';
+import { axiosInstance } from '../../../shared/lib/axiosInstance';
 import type { BaseAPIResponse } from '../../../shared/types/api';
 import type {
   LoginRequest,
@@ -9,14 +9,17 @@ import type {
 } from '../types';
 import { tokenService } from '../utils/tokenService';
 
-const authAPI = createServiceInstance('/api/Auth');
+const AUTH_BASE_PATH = '/api/Auth';
 
 export const authService = {
   /**
    * POST /api/Auth/register-customer
    */
   register: async (data: RegisterCustomerRequest): Promise<RegisterResponse> => {
-    const response = await authAPI.post<RegisterResponse>('/register-customer', data);
+    const response = await axiosInstance.post<RegisterResponse>(
+      `${AUTH_BASE_PATH}/register-customer`,
+      data,
+    );
     return response.data;
   },
 
@@ -24,7 +27,7 @@ export const authService = {
    * POST /api/Auth/login
    */
   login: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await authAPI.post<LoginResponse>('/Login', data);
+    const response = await axiosInstance.post<LoginResponse>(`${AUTH_BASE_PATH}/Login`, data);
 
     if (response.data.success && response.data.data) {
       tokenService.saveTokens({
@@ -40,7 +43,7 @@ export const authService = {
    * GET /api/Auth/me
    */
   getCurrentUser: async (): Promise<UserProfileResponse> => {
-    const response = await authAPI.get<UserProfileResponse>('/me');
+    const response = await axiosInstance.get<UserProfileResponse>(`${AUTH_BASE_PATH}/me`);
     return response.data;
   },
 
@@ -48,7 +51,7 @@ export const authService = {
    * POST /api/Auth/Refreshtoken
    */
   refreshToken: async (token: string, refreshToken: string): Promise<LoginResponse> => {
-    const response = await authAPI.post<LoginResponse>('/Refreshtoken', {
+    const response = await axiosInstance.post<LoginResponse>(`${AUTH_BASE_PATH}/Refreshtoken`, {
       token,
       refreshToken,
     });
@@ -71,7 +74,9 @@ export const authService = {
    * POST /api/Auth/send-confirmemail
    */
   sendConfirmEmail: async (): Promise<BaseAPIResponse> => {
-    const response = await authAPI.post<BaseAPIResponse>('/send-confirmemail');
+    const response = await axiosInstance.post<BaseAPIResponse>(
+      `${AUTH_BASE_PATH}/send-confirmemail`,
+    );
     return response.data;
   },
 
@@ -79,9 +84,12 @@ export const authService = {
    * GET /api/Auth/email-confirmation
    */
   confirmEmail: async (userId: string, token: string): Promise<BaseAPIResponse> => {
-    const response = await authAPI.get<BaseAPIResponse>('/email-confirmation', {
-      params: { userId, token },
-    });
+    const response = await axiosInstance.get<BaseAPIResponse>(
+      `${AUTH_BASE_PATH}/email-confirmation`,
+      {
+        params: { userId, token },
+      },
+    );
     return response.data;
   },
 
@@ -89,17 +97,20 @@ export const authService = {
    * GET /api/Auth/google-login
    */
   getGoogleLoginUrl: (): string => {
-    return `${API_BASE_URL}/api/Auth/google-login`;
+    return `/api/Auth/google-login`;
   },
 
   /**
    * POST /api/Auth/forgot-password
    */
   forgotPassword: async (email: string, clientUrl: string): Promise<BaseAPIResponse> => {
-    const response = await authAPI.post<BaseAPIResponse>('/forgot-password', {
-      email,
-      clientUrl,
-    });
+    const response = await axiosInstance.post<BaseAPIResponse>(
+      `${AUTH_BASE_PATH}/forgot-password`,
+      {
+        email,
+        clientUrl,
+      },
+    );
     return response.data;
   },
 
@@ -112,7 +123,7 @@ export const authService = {
     email: string,
     token: string,
   ): Promise<BaseAPIResponse> => {
-    const response = await authAPI.post<BaseAPIResponse>('/resetpassword', {
+    const response = await axiosInstance.post<BaseAPIResponse>(`${AUTH_BASE_PATH}/resetpassword`, {
       password,
       confirmPassword,
       email,
@@ -130,7 +141,7 @@ export const authService = {
     address: string,
     phoneNumber: string,
   ): Promise<BaseAPIResponse> => {
-    const response = await authAPI.put<BaseAPIResponse>('/profile', {
+    const response = await axiosInstance.put<BaseAPIResponse>(`${AUTH_BASE_PATH}/profile`, {
       userId,
       gender,
       address,
@@ -146,12 +157,16 @@ export const authService = {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await authAPI.post<BaseAPIResponse>('/upload-avatar', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
+    const response = await axiosInstance.post<BaseAPIResponse>(
+      `${AUTH_BASE_PATH}/upload-avatar`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        params: { deleteOld },
       },
-      params: { deleteOld },
-    });
+    );
     return response.data;
   },
 
@@ -159,7 +174,7 @@ export const authService = {
    * GET /api/Auth/{userId}
    */
   getUserById: async (userId: string): Promise<UserProfileResponse> => {
-    const response = await authAPI.get<UserProfileResponse>(`/${userId}`);
+    const response = await axiosInstance.get<UserProfileResponse>(`${AUTH_BASE_PATH}/${userId}`);
     return response.data;
   },
 
@@ -175,9 +190,7 @@ export const authService = {
     Role?: string;
     HotelId?: string;
   }): Promise<BaseAPIResponse> => {
-    const response = await authAPI.get<BaseAPIResponse>('/', { params });
+    const response = await axiosInstance.get<BaseAPIResponse>(AUTH_BASE_PATH, { params });
     return response.data;
   },
 };
-
-export { authAPI };
