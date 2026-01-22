@@ -3,10 +3,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import AuthPage from '../../apps/user/components/layouts/authPage';
 import UserRoutes from '../../apps/user/routes/userRoutes';
+import { useAuthStore } from '../../apps/user/store';
 import { ToastContainerComponent } from '../components/toastMessage';
 
 const AppRouter = () => {
-  const isAuthenticated = Boolean(localStorage.getItem('authToken')); // Thay đổi logic xác thực theo ứng dụng của bạn
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   return (
     <BrowserRouter>
       <Routes>

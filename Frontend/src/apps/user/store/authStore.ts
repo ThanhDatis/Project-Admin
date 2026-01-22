@@ -62,7 +62,7 @@ export const useAuthStore = create<AuthState>()(
       initializeAuth: () => {
         const tokens = tokenService.getTokens();
         if (tokens) {
-          set({ tokens });
+          set({ tokens, isAuthenticated: true });
           // Note: user profile should be fetched from API
           // This is handled in App.tsx or AuthProvider
         }
