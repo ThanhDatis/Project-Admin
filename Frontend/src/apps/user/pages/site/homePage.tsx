@@ -1,13 +1,24 @@
 import { Box, Container, Typography } from '@mui/material';
 import React from 'react';
 
+import { HeroSection } from '../../components/Banner';
 import UserLayout from '../../components/layouts/userLayout';
 
 // import UserLayout from '../../components/layouts/UserLayout';
 
 const HomePage: React.FC = () => {
+  function handleSearch(values: {
+    location: string;
+    checkIn: string;
+    checkOut: string;
+    guests: number;
+  }): void {
+    throw new Error('Function not implemented.');
+  }
+
   return (
     <UserLayout>
+      <HeroSection onSearch={handleSearch} />
       {/* Temporary placeholder - will be replaced with actual sections */}
       <Box
         sx={{

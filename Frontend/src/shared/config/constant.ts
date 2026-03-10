@@ -49,7 +49,7 @@ export const FOOTER_LINKS = {
   },
 } as const;
 
-export const SOCIALS_LINKS = [ 
+export const SOCIALS_LINKS = [
   { name: 'Facebook', icon: '/icons/facebook.svg', path: 'https://www.facebook.com' },
   { name: 'Twitter', icon: '/icons/twitter.svg', path: 'https://www.twitter.com' },
   { name: 'Instagram', icon: '/icons/instagram.svg', path: 'https://www.instagram.com' },
@@ -66,7 +66,7 @@ export const CONTACT_INFO = {
 export const ROUTES = {
   AUTH: {
     SIGNIN: '/auth/signin',
-    SIGNUP: '/auth/signup',   
+    SIGNUP: '/auth/signup',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
   },

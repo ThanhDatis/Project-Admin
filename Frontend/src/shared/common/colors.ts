@@ -166,7 +166,7 @@ export const primaryTextColor = '#000';
 export const secondaryTextColor = '#fff';
 export const infoTextColor = '#0288d1';
 export const labelColor = '#808080';
-export const disabledTextColor = gray[400];
+export const disabledTextColor = gray[500];
 export const placeholderTextColor = gray[500];
 export const hintTextColor = gray[600];
 
@@ -250,7 +250,7 @@ export const inputErrorBorder = errorColor;
 export const inputDisabledBackground = gray[100];
 export const inputPlaceholder = gray[500];
 
-export const dividerColor = gray[300];
+export const dividerColor = gray[400];
 export const scrollbarThumb = gray[400];
 export const scrollbarTrack = gray[200];
 export const focusRing = brand[500];
