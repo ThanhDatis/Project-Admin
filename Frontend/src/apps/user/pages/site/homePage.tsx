@@ -1,12 +1,16 @@
 import { Box, Container, Typography } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { HeroSection } from '../../components/Banner';
+import { DestinationSection } from '../../components/Destination';
 import UserLayout from '../../components/layouts/userLayout';
+import type { Destination } from '../../types';
 
 // import UserLayout from '../../components/layouts/UserLayout';
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate();
   function handleSearch(values: {
     location: string;
     checkIn: string;
@@ -16,9 +20,22 @@ const HomePage: React.FC = () => {
     throw new Error('Function not implemented.');
   }
 
+  const handleViewAllDestinations = () => {
+    navigate('/explore');
+  };
+
+  const handleDestinationClick = (destination: Destination) => {
+    navigate(`/explore?destination=${destination.slug}`);
+  };
+
   return (
     <UserLayout>
       <HeroSection onSearch={handleSearch} />
+
+      <DestinationSection
+        onViewAll={handleViewAllDestinations}
+        onCardClick={handleDestinationClick}
+      />
       {/* Temporary placeholder - will be replaced with actual sections */}
       <Box
         sx={{

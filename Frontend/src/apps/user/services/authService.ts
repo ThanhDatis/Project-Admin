@@ -6,6 +6,8 @@ import type {
   RegisterCustomerRequest,
   RegisterResponse,
   UserProfileResponse,
+  AvatarUploadResponse,
+  UpdateProfileRequest,
 } from '../types';
 import { tokenService } from '../utils/tokenService';
 
@@ -24,7 +26,7 @@ export const authService = {
   },
 
   /**
-   * POST /api/Auth/login
+   * POST /api/Auth/Login
    */
   login: async (data: LoginRequest): Promise<LoginResponse> => {
     const response = await axiosInstance.post<LoginResponse>(`${AUTH_BASE_PATH}/Login`, data);
@@ -86,9 +88,7 @@ export const authService = {
   confirmEmail: async (userId: string, token: string): Promise<BaseAPIResponse> => {
     const response = await axiosInstance.get<BaseAPIResponse>(
       `${AUTH_BASE_PATH}/email-confirmation`,
-      {
-        params: { userId, token },
-      },
+      { params: { userId, token } },
     );
     return response.data;
   },
@@ -106,10 +106,7 @@ export const authService = {
   forgotPassword: async (email: string, clientUrl: string): Promise<BaseAPIResponse> => {
     const response = await axiosInstance.post<BaseAPIResponse>(
       `${AUTH_BASE_PATH}/forgot-password`,
-      {
-        email,
-        clientUrl,
-      },
+      { email, clientUrl },
     );
     return response.data;
   },
@@ -134,30 +131,28 @@ export const authService = {
 
   /**
    * PUT /api/Auth/profile
+   * Cập nhật: gender, address, phoneNumber (fullName & email không đổi qua endpoint này)
    */
-  updateProfile: async (
-    userId: string,
-    gender: boolean,
-    address: string,
-    phoneNumber: string,
-  ): Promise<BaseAPIResponse> => {
+  updateProfile: async (payload: UpdateProfileRequest): Promise<BaseAPIResponse> => {
     const response = await axiosInstance.put<BaseAPIResponse>(`${AUTH_BASE_PATH}/profile`, {
-      userId,
-      gender,
-      address,
-      phoneNumber,
+      userId: payload.userId,
+      gender: payload.gender,
+      address: payload.address,
+      phoneNumber: payload.phoneNumber,
     });
     return response.data;
   },
 
   /**
    * POST /api/Auth/upload-avatar
+   * Gửi file theo dạng multipart/form-data với key là "file" (IFormFile)
+   * deleteOld=true sẽ xóa avatar cũ trên Cloudinary trước khi upload mới
    */
-  uploadAvatar: async (file: File, deleteOld: boolean = true): Promise<BaseAPIResponse> => {
+  uploadAvatar: async (file: File, deleteOld: boolean = true): Promise<AvatarUploadResponse> => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', file); // key 'file' khớp với IFormFile ở backend
 
-    const response = await axiosInstance.post<BaseAPIResponse>(
+    const response = await axiosInstance.post<AvatarUploadResponse>(
       `${AUTH_BASE_PATH}/upload-avatar`,
       formData,
       {
