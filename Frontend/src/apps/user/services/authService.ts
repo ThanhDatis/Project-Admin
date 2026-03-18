@@ -97,7 +97,8 @@ export const authService = {
    * GET /api/Auth/google-login
    */
   getGoogleLoginUrl: (): string => {
-    return `/api/Auth/google-login`;
+    const gatewayUrl = import.meta.env.VITE_API_GATEWAY_URL || 'http://localhost:7000';
+    return `${gatewayUrl}/api/Auth/google-login`;
   },
 
   /**
