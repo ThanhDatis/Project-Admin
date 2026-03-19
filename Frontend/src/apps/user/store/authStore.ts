@@ -41,7 +41,7 @@ export const useAuthStore = create<AuthState>()(
         } else {
           tokenService.clearTokens();
         }
-        set({ tokens });
+        set({ tokens, isAuthenticated: !!tokens });
       },
 
       setLoading: (loading) =>
@@ -60,11 +60,24 @@ export const useAuthStore = create<AuthState>()(
       },
 
       initializeAuth: () => {
-        const tokens = tokenService.getTokens();
-        if (tokens) {
-          set({ tokens, isAuthenticated: true });
-          // Note: user profile should be fetched from API
-          // This is handled in App.tsx or AuthProvider
+        const { tokens, isAuthenticated } = useAuthStore.getState();
+        // const tokens = tokenService.getTokens();
+        if (tokens && isAuthenticated) {
+          tokenService.saveTokens(tokens); // Ensure tokens are in sync with localStorage
+          // set({ tokens, isAuthenticated: true });
+        } else {
+          const savedTokens = tokenService.getTokens();
+          if (savedTokens) {
+            set({
+              tokens: savedTokens,
+              isAuthenticated: true,
+            });
+          }
+          // set({
+          //   user: null,
+          //   tokens: null,
+          //   isAuthenticated: false,
+          // });
         }
       },
     }),
@@ -72,6 +85,7 @@ export const useAuthStore = create<AuthState>()(
       name: 'auth-storage',
       partialize: (state) => ({
         user: state.user,
+        tokens: state.tokens,
         isAuthenticated: state.isAuthenticated,
       }),
     },

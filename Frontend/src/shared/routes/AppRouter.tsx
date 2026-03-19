@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -8,8 +7,15 @@ import UserRoutes from '../../apps/user/routes/userRoutes';
 import { useAuthStore } from '../../apps/user/store';
 import { ToastContainerComponent } from '../components/toastMessage';
 
+import { useEffect } from 'react';
+
 const AppRouter = () => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  // const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { isAuthenticated, initializeAuth } = useAuthStore();
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
   return (
     <BrowserRouter>
       <Routes>
@@ -18,7 +24,7 @@ const AppRouter = () => {
         <Route path="/auth/signup" element={<AuthPage />} />
         <Route path="/auth" element={<Navigate to="/auth/signin" replace />} />
 
-        <Route path="/oauth/callback" element={<OAuthCallback />} />
+        <Route path="/oauth-callback" element={<OAuthCallback />} />
 
         {/* User Routes - Protected (sau khi đăng nhập) */}
         {isAuthenticated ? (

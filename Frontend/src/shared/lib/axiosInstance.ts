@@ -1,6 +1,7 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
 
-import { tokenService } from '../../apps/user/utils/tokenService';
+import { useAuthStore } from '../../apps/user/store';
+// import { tokenService } from '../../apps/user/utils/tokenService';
 import { API_CONFIG } from '../config/env';
 
 const PUBLIC_ENDPOINTS = [
@@ -10,6 +11,7 @@ const PUBLIC_ENDPOINTS = [
   '/resetpassword',
   '/google-login',
   '/email-confirmation',
+  '/Refreshtoken',
 ] as const;
 
 function isPublicEndpoint(url?: string): boolean {
@@ -31,17 +33,12 @@ export const axiosInstance: AxiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     if (!isPublicEndpoint(config.url)) {
-      const token = tokenService.getAccessToken();
+      const tokens = useAuthStore.getState().tokens;
+      const token = tokens?.accessToken;
+      // const token = tokenService.getAccessToken();
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
-    }
-
-    if (import.meta.env.DEV) {
-      console.log(`🚀 [API Request] ${config.method?.toUpperCase()} ${config.url}`, {
-        data: config.data,
-        params: config.params,
-      });
     }
 
     return config;
@@ -82,8 +79,8 @@ axiosInstance.interceptors.response.use(
 
     if (error.response?.status === 401) {
       console.warn('🔒 [Auth] 401 Unauthorized - Clearing tokens');
-
-      tokenService.clearTokens();
+      useAuthStore.getState().logout();
+      // tokenService.clearTokens();
 
       if (typeof window !== 'undefined' && !window.location.pathname.includes('/auth/signin')) {
         console.log('🔄 [Auth] Redirecting to login page');
