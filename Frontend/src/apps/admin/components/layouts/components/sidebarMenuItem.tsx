@@ -81,7 +81,7 @@ export const SidebarMenuItem: React.FC<SidebarMenuItemProps> = ({
             justifyContent: 'center',
             color: isActive ? orange[700] : orange[500],
           },
-          open ? { mr: 3 } : { mr: 'auto' },
+          open ? { mr: 1 } : { mr: 'auto' },
         ]}
       >
         {item.icon}

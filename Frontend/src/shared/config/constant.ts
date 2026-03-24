@@ -10,6 +10,10 @@ export const CONTAINER_PADDING = {
   mobile: '16px',
 };
 
+// Function to get default route based on user role
+export type UserRole = 'SysAdmin' | 'HotelOwner' | 'Receptionist' | 'Housekeeping' | 'Customer';
+
+
 // Constant Navigation Items Header
 export const NAV_ITEMS = [
   { label: 'Home', path: '/' },
@@ -71,10 +75,10 @@ export const ROUTES = {
     RESET_PASSWORD: '/auth/reset-password',
   },
   DASHBOARD: '/dashboard',
-  PRODUCTS: '/products',
+  // PRODUCTS: '/products',
   CUSTOMERS: '/customers',
-  ORDERS: '/orders',
-  EMPLOYEES: '/employees',
+  // ORDERS: '/orders',
+  // EMPLOYEES: '/employees',
   SETTING: '/setting',
   PROFILE: '/profile',
 } as const;

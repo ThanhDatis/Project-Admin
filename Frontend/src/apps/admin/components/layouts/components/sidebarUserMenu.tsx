@@ -3,10 +3,11 @@ import { Avatar, Box, ListItemIcon, ListItemText, Menu, MenuItem, Typography } f
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { brand } from '../../../../../shared/common/colors';
+import { ToastMessage } from '../../../../../shared/components/toastMessage';
 import { ROUTES } from '../../../../../shared/config/constant';
-// import { borderLine } from '../../../common/color';
-// import { useAuthStore } from '../../../store';
-// import ToastMessage from '../../toastMessage';
+
+import { useAuthStore } from '../../../../user/store';
 
 import ConditionalTooltip from './conditionalTooltip';
 
@@ -14,44 +15,54 @@ interface SidebarUserMenuProps {
   open: boolean;
 }
 
+const ROLE_LABELS: Record<string, string> = {
+  SysAdmin: 'System Admin',
+  HotelOwner: 'Hotel Owner',
+  Customer: 'Customer',
+  Receptionist: 'Receptionist',
+  Housekeeping: 'Housekeeping',
+};
+
 export const SidebarUserMenu: React.FC<SidebarUserMenuProps> = ({ open }) => {
   const navigate = useNavigate();
-  // const { user, logout } = useAuthStore();
+  const { user, logout } = useAuthStore();
   const [anchorEL, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const user = {
-    name: 'Admin Demo',
-    email: 'admin@demo.com',
-  };
+  const displayName = user?.fullName || user?.userName || 'User';
+  const displayEmail = user?.email || '';
+  const avatarLetter = displayName.charAt(0).toUpperCase();
+  const roleLabel = user?.role ? (ROLE_LABELS[user.role] ?? user.role) : '';
 
-  const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleUserMenuClose = () => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
 
   const handleProfile = () => {
-    handleUserMenuClose();
-    navigate(ROUTES.PROFILE || './profile');
+    handleClose();
+    navigate(ROUTES.PROFILE);
   };
 
-  // const handleLogout = () => {
-  //   handleUserMenuClose();
-  //   logout();
-  //   ToastMessage('success', 'Logout successfully!');
-  //   navigate(ROUTES.AUTH.SIGNIN);
-  // };
+  const handleLogout = () => {
+    handleClose();
+    logout();
+    ToastMessage('success', 'Logout successfully!');
+    navigate(ROUTES.AUTH.SIGNIN);
+  };
 
   const userMenuContent = (
     <Box
+      onClick={handleOpen}
       sx={[
         {
           p: 2,
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
+          transition: 'background 0.3s',
           '&:hover': {
             backgroundColor: '#f5f5f5',
           },
@@ -63,28 +74,35 @@ export const SidebarUserMenu: React.FC<SidebarUserMenuProps> = ({ open }) => {
             }
           : {
               justifyContent: 'center',
-              gap: 0,
             },
       ]}
-      onClick={handleUserMenuOpen}
     >
-      <Avatar sx={{ width: 32, height: 32, bgcolor: '#1976d2' }}>
-        <PersonIcon sx={{ fontSize: 20 }} />
+      <Avatar
+        src={user?.avatarUrl ?? undefined}
+        sx={{
+          width: 32,
+          height: 32,
+          bgcolor: brand[500],
+        }}
+      >
+        {!user?.avatarUrl && avatarLetter}
       </Avatar>
       {open && (
         <Box sx={{ minWidth: 0, flex: 1 }}>
           <Typography
             variant="body2"
+            // noWrap
             sx={{
               fontWeight: 600,
               color: '#333',
               opacity: open ? 1 : 0,
             }}
           >
-            {user?.name || 'Admin ABCD'}
+            {displayName}
           </Typography>
           <Typography
             variant="caption"
+            // noWrap
             sx={{
               color: '#666',
               display: 'block',
@@ -94,7 +112,7 @@ export const SidebarUserMenu: React.FC<SidebarUserMenuProps> = ({ open }) => {
               opacity: open ? 1 : 0,
             }}
           >
-            {user?.email || 'admin@gmail.com'}
+            {displayEmail}
           </Typography>
         </Box>
       )}
@@ -103,32 +121,45 @@ export const SidebarUserMenu: React.FC<SidebarUserMenuProps> = ({ open }) => {
 
   return (
     <>
-      <ConditionalTooltip show={!open} title={user?.name || 'Admin ABCD'} placement="right" arrow>
+      <ConditionalTooltip
+        show={!open}
+        title={`${displayName} (${roleLabel})`}
+        placement="right"
+        arrow
+      >
         {userMenuContent}
       </ConditionalTooltip>
 
       <Menu
         anchorEl={anchorEL}
         open={Boolean(anchorEL)}
-        onClose={handleUserMenuClose}
+        onClose={handleClose}
         transformOrigin={{ horizontal: 'center', vertical: 'bottom' }}
         anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
         slotProps={{
           paper: {
             sx: {
-              width: 200,
+              width: 220,
               mt: -1,
             },
           },
         }}
       >
-        <MenuItem onClick={handleProfile}>
+        <Box sx={{ px: 2, py: 1.5, borderBottom: '1px solid #f0f0f0' }}>
+          <Typography variant="body2" noWrap sx={{ fontWeight: 600, color: '#1a1a1a' }}>
+            {displayName}
+          </Typography>
+          <Typography variant="caption" noWrap sx={{ color: '#888', display: 'block' }}>
+            {displayEmail}
+          </Typography>
+        </Box>
+        <MenuItem onClick={handleProfile} sx={{ mt: 1 }}>
           <ListItemIcon>
             <PersonIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Profile</ListItemText>
         </MenuItem>
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem onClick={handleLogout} sx={{ color: 'error.main' }}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" color="error" />
           </ListItemIcon>

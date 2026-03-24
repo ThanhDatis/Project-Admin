@@ -1,3 +1,4 @@
+import type { UserRole } from '../../../shared/config/constant';
 import type { BaseAPIResponse } from '../../../shared/types/api';
 
 export interface SignInFormValues {
@@ -71,7 +72,7 @@ export interface AuthTokens {
 
 export interface AuthUser extends UserProfile {
   userId: string;
-  role: 'Customer' | 'HotelOwner' | 'Staff' | 'Admin'; // Decoded từ JWT
+  role: UserRole;
 }
 
 export type SocialProvider = 'google' | 'facebook';
