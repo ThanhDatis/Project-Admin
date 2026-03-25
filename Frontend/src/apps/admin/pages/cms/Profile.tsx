@@ -1,28 +1,12 @@
 import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
-import {
-  Box,
-  Button,
-  Card,
-  Chip,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Grid,
-  // Radio,
-  // RadioGroup,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Card, Chip, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 import {
   blue,
   cyan,
-  gray,
   green,
   labelColor,
   primaryBackground,
@@ -31,6 +15,7 @@ import {
 } from '../../../../shared/common/colors';
 
 import { ProfileAvatarCard, ChangePassword } from './components/Profile';
+import ProfileInfoForm from './components/Profile/ProfileInfoForm';
 import { useAdminProfile } from './hooks/useAdminProfile';
 
 // ─── Role badge config ────────────────────────────────────────────────────
@@ -45,13 +30,13 @@ const ROLE_CONFIG: Record<string, { label: string; color: string; bg: string }> 
 
 // ─── Validation ──────────────────────────────────────────────────────────
 
-const profileSchema = Yup.object({
-  phoneNumber: Yup.string()
-    .matches(/^[0-9]{9,11}$/, 'Số điện thoại không hợp lệ')
-    .required('Vui lòng nhập số điện thoại'),
-  address: Yup.string().max(255, 'Địa chỉ tối đa 255 ký tự'),
-  gender: Yup.mixed<boolean | null>().nullable(),
-});
+// const profileSchema = Yup.object({
+//   phoneNumber: Yup.string()
+//     .matches(/^[0-9]{9,11}$/, 'Số điện thoại không hợp lệ')
+//     .required('Vui lòng nhập số điện thoại'),
+//   address: Yup.string().max(255, 'Địa chỉ tối đa 255 ký tự'),
+//   gender: Yup.mixed<boolean>().nullable(),
+// });
 
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -152,21 +137,6 @@ function AdminProfile() {
                 },
               }}
             />
-
-            {/* Email confirmed */}
-            {/* {user?.emailConfirmed && (
-              <Chip
-                label="Email Confirmed"
-                size="small"
-                sx={{
-                  bgcolor: '#e3f2fd',
-                  color: '#1565c0',
-                  fontWeight: 500,
-                  fontSize: '0.7rem',
-                  height: 24,
-                }}
-              />
-            )} */}
           </Box>
         </Box>
 
@@ -201,138 +171,7 @@ function AdminProfile() {
       </Card>
 
       {/* ── Edit form ── */}
-      <Card
-        sx={{
-          borderRadius: 3,
-          p: 3,
-          boxShadow: 'none',
-          border: `1px solid ${gray[300]}`,
-        }}
-      >
-        <Typography variant="h1" sx={{ mb: 3, fontSize: 24 }}>
-          Personal Information
-        </Typography>
-
-        <Divider sx={{ mb: 3 }} />
-
-        <form onSubmit={formik.handleSubmit}>
-          <Grid container spacing={3}>
-            {/* Full name — read-only (backend không có endpoint đổi tên) */}
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                label="Full Name"
-                value={formik.values.fullName}
-                fullWidth
-                disabled
-                size="small"
-                InputProps={{ readOnly: true }}
-                sx={{ '& .MuiInputBase-root': { bgcolor: '#fafafa' } }}
-              />
-            </Grid>
-
-            {/* Email — read-only */}
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                label="Email"
-                value={formik.values.email}
-                fullWidth
-                disabled
-                size="small"
-                InputProps={{ readOnly: true }}
-                sx={{ '& .MuiInputBase-root': { bgcolor: '#fafafa' } }}
-                helperText="Email cannot be changed"
-              />
-            </Grid>
-
-            {/* Phone */}
-            {/* <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                label="Phone Number"
-                name="phoneNumber"
-                value={formik.values.phoneNumber}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
-                helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                fullWidth
-                size="small"
-                placeholder="0xxxxxxxxx"
-              />
-            </Grid> */}
-
-            {/* Address */}
-            {/* <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField
-                label="Address"
-                name="address"
-                value={formik.values.address}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.address && Boolean(formik.errors.address)}
-                helperText={formik.touched.address && formik.errors.address}
-                fullWidth
-                size="small"
-                placeholder="House number, street, district, city"
-              />
-            </Grid> */}
-
-            {/* Gender */}
-            {/* <Grid size={{ xs: 12 }}>
-              <FormControl>
-                <FormLabel sx={{ fontSize: '0.875rem', fontWeight: 600, color: '#555', mb: 0.5 }}>
-                  Gender
-                </FormLabel>
-                <RadioGroup
-                  row
-                  name="gender"
-                  value={
-                    formik.values.gender === true
-                      ? 'male'
-                      : formik.values.gender === false
-                        ? 'female'
-                        : 'other'
-                  }
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    formik.setFieldValue(
-                      'gender',
-                      val === 'male' ? true : val === 'female' ? false : null,
-                    );
-                  }}
-                >
-                  <FormControlLabel value="male" control={<Radio size="small" />} label="Male" />
-                  <FormControlLabel
-                    value="female"
-                    control={<Radio size="small" />}
-                    label="Female"
-                  />
-                  <FormControlLabel value="other" control={<Radio size="small" />} label="Other" />
-                </RadioGroup>
-              </FormControl>
-            </Grid> */}
-          </Grid>
-
-          {/* Submit */}
-          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-            <Button
-              type="submit"
-              variant="contained"
-              startIcon={isSavingProfile ? undefined : <SaveRoundedIcon />}
-              disabled={isSavingProfile || !formik.dirty}
-              sx={{
-                borderRadius: 2,
-                textTransform: 'none',
-                px: 3,
-                bgcolor: '#00ceb5',
-                '&:hover': { bgcolor: '#00b8a2' },
-                '&:disabled': { bgcolor: '#b2dfdb', color: '#fff' },
-              }}
-            >
-              {isSavingProfile ? 'Save...' : 'Save Changes'}
-            </Button>
-          </Box>
-        </form>
-      </Card>
+      <ProfileInfoForm formik={formik} isSaving={isSavingProfile} />
 
       {/* ── Change Password Dialog ── */}
       <ChangePassword

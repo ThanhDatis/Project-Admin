@@ -8,7 +8,7 @@ interface ProfileAvatarCardProps {
   displayName: string;
   isUploading: boolean;
   onTriggerUpload: () => void;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
