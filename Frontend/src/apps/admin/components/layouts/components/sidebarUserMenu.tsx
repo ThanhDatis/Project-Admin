@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { brand } from '../../../../../shared/common/colors';
 import { ToastMessage } from '../../../../../shared/components/toastMessage';
 import { ROUTES } from '../../../../../shared/config/constant';
-
 import { useAuthStore } from '../../../../user/store';
 
 import ConditionalTooltip from './conditionalTooltip';

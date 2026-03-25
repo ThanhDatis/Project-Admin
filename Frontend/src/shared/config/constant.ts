@@ -13,7 +13,6 @@ export const CONTAINER_PADDING = {
 // Function to get default route based on user role
 export type UserRole = 'SysAdmin' | 'HotelOwner' | 'Receptionist' | 'Housekeeping' | 'Customer';
 
-
 // Constant Navigation Items Header
 export const NAV_ITEMS = [
   { label: 'Home', path: '/' },
