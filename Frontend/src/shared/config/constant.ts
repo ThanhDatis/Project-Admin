@@ -1,3 +1,5 @@
+import { blue, green, red, purple } from '../common/colors';
+
 export const DRAWER_WIDTH = 240;
 export const DRAWER_WIDTH_PRODUCT_MOBILE = '90%';
 export const HEIGHT_HEADER_SIDE_BAR = 70;
@@ -12,6 +14,14 @@ export const CONTAINER_PADDING = {
 
 // Function to get default route based on user role
 export type UserRole = 'SysAdmin' | 'HotelOwner' | 'Receptionist' | 'Housekeeping' | 'Customer';
+
+export const ROLE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
+  SysAdmin: { label: 'System Admin', color: red[900], bg: '#ffebee' },
+  HotelOwner: { label: 'Hotel Owner', color: red[700], bg: '#fff3e0' },
+  Receptionist: { label: 'Receptionist', color: blue[700], bg: '#e3f2fd' },
+  Housekeeping: { label: 'Housekeeping', color: green[700], bg: '#e8f5e9' },
+  Customer: { label: 'Customer', color: purple[700], bg: '#f3e5f5' },
+};
 
 // Constant Navigation Items Header
 export const NAV_ITEMS = [
