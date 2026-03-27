@@ -22,7 +22,6 @@ export const useAdminProfile = () => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
 
-  // ─── Change password dialog ─────────────────────────────────────────────
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
@@ -42,10 +41,10 @@ export const useAdminProfile = () => {
       const response = await authService.forgotPassword(user.email, clientUrl);
 
       if (!response.success) {
-        throw new Error(response.message || 'Gửi email thất bại');
+        throw new Error(response.message || 'Failed to send reset email');
       }
 
-      ToastMessage('success', `Email đặt lại mật khẩu đã được gửi đến ${user.email}`);
+      ToastMessage('success', `Password reset email has been sent to ${user.email}`);
       closePasswordDialog();
     } catch (error) {
       ToastMessage('error', handleAPIError(error));
@@ -57,7 +56,7 @@ export const useAdminProfile = () => {
   // ─── Logout ─────────────────────────────────────────────────────────────
   const handleLogout = () => {
     logout();
-    ToastMessage('success', 'Đăng xuất thành công!');
+    ToastMessage('success', 'Logout successful!');
     navigate(ROUTES.AUTH.SIGNIN);
   };
 

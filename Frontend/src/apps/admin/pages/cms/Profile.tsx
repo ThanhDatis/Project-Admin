@@ -2,31 +2,22 @@ import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { Box, Button, Card, Chip, Typography } from '@mui/material';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
+// import * as Yup from 'yup';
 
 import {
-  blue,
+  // blue,
   cyan,
   green,
   labelColor,
   primaryBackground,
-  purple,
-  red,
+  // purple,
+  // red,
 } from '../../../../shared/common/colors';
+import { ROLE_CONFIG } from '../../../../shared/config/constant';
 
 import { ProfileAvatarCard, ChangePassword } from './components/Profile';
 import ProfileInfoForm from './components/Profile/ProfileInfoForm';
 import { useAdminProfile } from './hooks/useAdminProfile';
-
-// ─── Role badge config ────────────────────────────────────────────────────
-
-const ROLE_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  SysAdmin: { label: 'System Admin', color: red[900], bg: '#ffebee' },
-  HotelOwner: { label: 'Hotel Owner', color: red[700], bg: '#fff3e0' },
-  Receptionist: { label: 'Receptionist', color: blue[700], bg: '#e3f2fd' },
-  Housekeeping: { label: 'Housekeeping', color: green[700], bg: '#e8f5e9' },
-  Customer: { label: 'Customer', color: purple[700], bg: '#f3e5f5' },
-};
 
 // ─── Validation ──────────────────────────────────────────────────────────
 
@@ -67,7 +58,7 @@ function AdminProfile() {
 
   const formik = useFormik({
     initialValues,
-    validationSchema: profileSchema,
+    // validationSchema: profileSchema,
     enableReinitialize: true,
     onSubmit: handleSaveProfile,
   });
@@ -170,7 +161,6 @@ function AdminProfile() {
         </Box>
       </Card>
 
-      {/* ── Edit form ── */}
       <ProfileInfoForm formik={formik} isSaving={isSavingProfile} />
 
       {/* ── Change Password Dialog ── */}
