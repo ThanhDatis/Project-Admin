@@ -5,6 +5,7 @@ import LayoutDashboard from '../components/layouts/layoutDashboard';
 import Dashboard from '../pages/cms/Dashboard';
 import Profile from '../pages/cms/Profile';
 import Setting from '../pages/cms/Setting';
+import UsersPage from '../pages/cms/User';
 
 const AdminRoutes = () => {
   return (
@@ -25,7 +26,7 @@ const AdminRoutes = () => {
             path="users"
             element={
               <RoleGuard allowedRoles={['SysAdmin']}>
-                <div>Users Page — coming soon</div>
+                <UsersPage />
               </RoleGuard>
             }
           />
